@@ -7,7 +7,7 @@ const GamePage = (props) => {
   const [categories, setCategories] = useState([]);
   const [showQuestionModal, setShowQuestionModal] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState({});
-
+  const [isFKeyPressed, setIsFKeyPressed] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,6 +40,37 @@ const GamePage = (props) => {
       showAnswer: true,
     }));
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "f") {
+        setIsFKeyPressed(true);
+      }
+
+      if (isFKeyPressed) {
+        // Handle key combinations
+        if (event.key === "1") {
+          handleQuestionClick(categories[0].questions[0]);
+        } else if (event.key === "2") {
+          handleQuestionClick(categories[0].questions[1]);
+        }
+      }
+    };
+
+    const handleKeyUp = (event) => {
+      if (event.key === "f") {
+        setIsFKeyPressed(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [categories, isFKeyPressed]);
 
   return (
     <div className="game-page">
